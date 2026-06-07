@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: mailhub_postgres
+    environment:
+      POSTGRES_DB: mail_hub
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: mailhub_redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:
