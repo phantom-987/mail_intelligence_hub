@@ -1,12 +1,21 @@
 import os
 from pathlib import Path
 from decouple import config
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables from .env
+load_dotenv(BASE_DIR / ".env")
+
 SECRET_KEY = 'django-insecure-7zi=)0hg$bbpfl2@6#f(h=o=hnz1^afa#r%)59+s1y)-@u$@mk'
+
 DEBUG = True
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -54,7 +63,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# ── DATABASE (PostgreSQL via Docker) ──────────────────────────────────────────
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -66,7 +74,6 @@ DATABASES = {
     }
 }
 
-# ── CACHE / REDIS (via Docker) ────────────────────────────────────────────────
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
@@ -81,15 +88,8 @@ CACHES = {
     }
 }
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-SESSION_CACHE_ALIAS = 'default'
-
-# ── SESSIONS (DB-backed for reliable OAuth state) ─────────────────────────────
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-# SESSION_CACHE_ALIAS = 'default'  # disabled — using DB sessions for OAuth
 
-
-# ── AUTH ──────────────────────────────────────────────────────────────────────
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
@@ -101,24 +101,30 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# ── STATIC / MEDIA ────────────────────────────────────────────────────────────
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kolkata'
+
 USE_I18N = True
 USE_TZ = True
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ── GMAIL OAUTH ───────────────────────────────────────────────────────────────
+# ===================================================================
+# GMAIL OAUTH
+# ===================================================================
 
-GMAIL_CLIENT_ID = os.environ.get('GMAIL_CLIENT_ID', '')
-GMAIL_CLIENT_SECRET = os.environ.get('GMAIL_CLIENT_SECRET', '')
+GMAIL_CLIENT_ID = config('GMAIL_CLIENT_ID', default='')
+GMAIL_CLIENT_SECRET = config('GMAIL_CLIENT_SECRET', default='')
+
 GMAIL_REDIRECT_URI = 'http://localhost:8000/gmail/oauth/callback/'
+
 GMAIL_SCOPES = [
     'openid',
     'https://www.googleapis.com/auth/userinfo.email',
@@ -126,10 +132,16 @@ GMAIL_SCOPES = [
     'https://www.googleapis.com/auth/gmail.readonly',
 ]
 
+# ===================================================================
+# OPENAI
+# ===================================================================
 
-# ── OPENAI ────────────────────────────────────────────────────────────────────
-OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
-# ── REST FRAMEWORK ────────────────────────────────────────────────────────────
+OPENAI_API_KEY = config('OPENAI_API_KEY', default='')
+
+# ===================================================================
+# REST FRAMEWORK
+# ===================================================================
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
@@ -141,6 +153,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
 }
 
-# ── APSCHEDULER ───────────────────────────────────────────────────────────────
+# ===================================================================
+# APSCHEDULER
+# ===================================================================
+
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 APSCHEDULER_RUN_NOW_TIMEOUT = 25
