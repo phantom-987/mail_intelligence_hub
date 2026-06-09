@@ -1,256 +1,255 @@
-<!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>{% block title %}Mail Intelligence Hub{% endblock %}</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
-  <style>
-    :root {
-      --sidebar-width: 240px;
-      --accent: #4f8ef7;
-    }
-    body {
-      background: #0d1117;
-      color: #e6edf3;
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-    }
-    .sidebar {
-      width: var(--sidebar-width);
-      min-height: 100vh;
-      background: #161b22;
-      border-right: 1px solid #30363d;
-      position: fixed;
-      top: 0; left: 0;
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      padding: 1.5rem 0;
-    }
-    .sidebar .brand {
-      padding: 0 1.5rem 1.5rem;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--accent);
-      border-bottom: 1px solid #30363d;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-    }
-    .sidebar .nav-link {
-      color: #8b949e;
-      padding: .65rem 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: .75rem;
-      font-size: .9rem;
-      transition: all .2s;
-      border-left: 3px solid transparent;
-      text-decoration: none;
-    }
-    .sidebar .nav-link:hover,
-    .sidebar .nav-link.active {
-      color: #e6edf3;
-      background: rgba(79,142,247,0.1);
-      border-left-color: var(--accent);
-    }
-    .sidebar .nav-link i {
-      font-size: 1rem;
-      width: 18px;
-    }
-    .main-content {
-      margin-left: var(--sidebar-width);
-      padding: 2rem;
-      min-height: 100vh;
-    }
-    .card {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 12px;
-    }
-    .stat-card {
-      border-radius: 12px;
-      padding: 1.5rem;
-    }
-    .badge-high {
-      background: rgba(248,81,73,0.15);
-      color: #f85149;
-      border: 1px solid rgba(248,81,73,0.3);
-      padding: .3rem .7rem;
-      border-radius: 50px;
-      font-size: .75rem;
-      font-weight: 600;
-    }
-    .badge-medium {
-      background: rgba(210,153,34,0.15);
-      color: #d29922;
-      border: 1px solid rgba(210,153,34,0.3);
-      padding: .3rem .7rem;
-      border-radius: 50px;
-      font-size: .75rem;
-      font-weight: 600;
-    }
-    .badge-low {
-      background: rgba(63,185,80,0.15);
-      color: #3fb950;
-      border: 1px solid rgba(63,185,80,0.3);
-      padding: .3rem .7rem;
-      border-radius: 50px;
-      font-size: .75rem;
-      font-weight: 600;
-    }
-    .table { color: #e6edf3; }
-    .table th {
-      color: #8b949e;
-      font-size: .78rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      border-color: #30363d;
-      font-weight: 600;
-      padding: 1rem;
-    }
-    .table td {
-      border-color: #21262d;
-      vertical-align: middle;
-      padding: .85rem 1rem;
-    }
-    .table tbody tr:hover {
-      background: rgba(79,142,247,0.05);
-    }
-    .form-control, .form-select {
-      background: #0d1117;
-      border-color: #30363d;
-      color: #e6edf3;
-      border-radius: 8px;
-    }
-    .form-control:focus, .form-select:focus {
-      background: #0d1117;
-      border-color: var(--accent);
-      color: #e6edf3;
-      box-shadow: 0 0 0 .2rem rgba(79,142,247,.15);
-    }
-    .form-control::placeholder { color: #484f58; }
-    .form-label {
-      color: #8b949e;
-      font-size: .85rem;
-      margin-bottom: .4rem;
-    }
-    .btn-accent {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-weight: 500;
-    }
-    .btn-accent:hover {
-      background: #3a7de8;
-      color: #fff;
-    }
-    .alert-container {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      z-index: 9999;
-      min-width: 300px;
-      max-width: 420px;
-    }
-    .auth-wrapper {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #0d1117;
-    }
-    .auth-card {
-      width: 100%;
-      max-width: 440px;
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 16px;
-      padding: 2.5rem;
-    }
-    .auth-logo {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--accent);
-      text-align: center;
-      margin-bottom: .5rem;
-    }
-    .auth-subtitle {
-      text-align: center;
-      color: #8b949e;
-      font-size: .9rem;
-      margin-bottom: 2rem;
-    }
-    .auth-footer {
-      text-align: center;
-      color: #8b949e;
-      font-size: .85rem;
-      margin-top: 1.5rem;
-    }
-    .auth-footer a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-    .auth-footer a:hover { text-decoration: underline; }
-  </style>
-  {% block extra_css %}{% endblock %}
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}Dashboard — Mail Hub{% endblock %}
 
-{% if user.is_authenticated %}
-<nav class="sidebar">
-  <div class="brand">
-    <i class="bi bi-envelope-check-fill"></i>Mail Hub
+{% block content %}
+
+<!-- Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h4 class="fw-bold mb-1" style="font-size:1.6rem;">
+      Hey <span style="color:var(--accent);">{{ user.first_name|default:user.username }}</span> 👋
+    </h4>
+    <p class="text-muted small mb-0">Here's what's happening in your inbox</p>
   </div>
-  <a href="{% url 'dashboard:home' %}"
-     class="nav-link {% if request.resolver_match.app_name == 'dashboard' %}active{% endif %}">
-    <i class="bi bi-speedometer2"></i> Dashboard
-  </a>
-  <a href="{% url 'keywords:email_list' %}"
-     class="nav-link {% if 'emails' in request.path %}active{% endif %}">
-    <i class="bi bi-envelope"></i> Emails
-  </a>
-  <a href="{% url 'keywords:list' %}"
-     class="nav-link {% if 'keywords' in request.path %}active{% endif %}">
-    <i class="bi bi-tags"></i> Keywords
-  </a>
-  <a href="{% url 'accounts:profile' %}"
-     class="nav-link {% if 'profile' in request.path %}active{% endif %}">
-    <i class="bi bi-gear"></i> Settings
-  </a>
-  <div class="mt-auto px-3 pb-2">
-    <div class="text-muted small mb-2 px-2" style="font-size:.78rem;">
-      {{ user.email|truncatechars:28 }}
-    </div>
-    <a href="{% url 'accounts:logout' %}" class="nav-link" style="color:#f85149;">
-      <i class="bi bi-box-arrow-right"></i> Logout
-    </a>
-  </div>
-</nav>
-<div class="main-content">
-{% else %}
-<div>
-{% endif %}
-
-  <!-- FLASH MESSAGES -->
-  <div class="alert-container">
-    {% for msg in messages %}
-    <div class="alert alert-{% if msg.tags == 'error' %}danger{% else %}{{ msg.tags }}{% endif %} alert-dismissible fade show shadow" role="alert">
-      {{ msg }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    {% endfor %}
-  </div>
-
-  {% block content %}{% endblock %}
-
+  <form method="post" action="{% url 'dashboard:sync' %}">
+    {% csrf_token %}
+    <button class="btn btn-accent btn-sm px-4 py-2">
+      <i class="bi bi-arrow-clockwise me-2"></i>Sync Now
+    </button>
+  </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-{% block extra_js %}{% endblock %}
-</body>
-</html>
+<!-- Stat Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card h-100" style="border-color:rgba(79,142,247,0.3);">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small mb-2">Total Emails</div>
+          <div class="fw-bold" style="font-size:2rem;color:#4f8ef7;line-height:1;">{{ stats.total }}</div>
+        </div>
+        <div style="width:44px;height:44px;border-radius:12px;background:rgba(79,142,247,0.15);display:flex;align-items:center;justify-content:center;">
+          <i class="bi bi-envelope-fill" style="color:#4f8ef7;font-size:1.2rem;"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card h-100" style="border-color:rgba(210,153,34,0.3);">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small mb-2">Important</div>
+          <div class="fw-bold" style="font-size:2rem;color:#d29922;line-height:1;">{{ stats.important }}</div>
+        </div>
+        <div style="width:44px;height:44px;border-radius:12px;background:rgba(210,153,34,0.15);display:flex;align-items:center;justify-content:center;">
+          <i class="bi bi-star-fill" style="color:#d29922;font-size:1.2rem;"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card h-100" style="border-color:rgba(248,81,73,0.3);">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small mb-2">High Priority</div>
+          <div class="fw-bold" style="font-size:2rem;color:#f85149;line-height:1;">{{ stats.high_priority }}</div>
+        </div>
+        <div style="width:44px;height:44px;border-radius:12px;background:rgba(248,81,73,0.15);display:flex;align-items:center;justify-content:center;">
+          <i class="bi bi-fire" style="color:#f85149;font-size:1.2rem;"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card h-100" style="border-color:rgba(63,185,80,0.3);">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="text-muted small mb-2">Today</div>
+          <div class="fw-bold" style="font-size:2rem;color:#3fb950;line-height:1;">{{ stats.today }}</div>
+        </div>
+        <div style="width:44px;height:44px;border-radius:12px;background:rgba(63,185,80,0.15);display:flex;align-items:center;justify-content:center;">
+          <i class="bi bi-calendar-check-fill" style="color:#3fb950;font-size:1.2rem;"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Fetch by Gmail ID -->
+<div class="card mb-4" style="border-color:rgba(79,142,247,0.2);">
+  <div class="card-body p-4">
+    <h6 class="fw-semibold mb-1">
+      <i class="bi bi-search me-2" style="color:var(--accent);"></i>Quick Email Lookup
+    </h6>
+    <p class="text-muted small mb-3">Search emails by sender's Gmail address</p>
+    <div class="d-flex gap-2 flex-wrap">
+      <input type="text" id="gmail-search-input" class="form-control"
+             placeholder="Enter Gmail address e.g. someone@gmail.com"
+             style="max-width:420px;"/>
+      <button class="btn btn-accent px-4" onclick="searchBySender()">
+        <i class="bi bi-search me-1"></i>Search
+      </button>
+      <button class="btn btn-outline-secondary px-3" onclick="clearSearch()">
+        Clear
+      </button>
+    </div>
+    <div id="search-result" class="mt-3"></div>
+  </div>
+</div>
+
+<!-- Email Table -->
+<div class="card">
+  <div class="px-4 pt-3 pb-2 border-bottom border-secondary d-flex justify-content-between align-items-center">
+    <h6 class="mb-0 fw-semibold">
+      <i class="bi bi-inbox me-2" style="color:var(--accent);"></i>Recent Emails
+    </h6>
+    <a href="{% url 'keywords:email_list' %}" class="btn btn-sm btn-outline-secondary">
+      View All <i class="bi bi-arrow-right ms-1"></i>
+    </a>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table mb-0" id="email-table">
+      <thead>
+        <tr>
+          <th style="width:35%;">Subject</th>
+          <th>Sender</th>
+          <th>Category</th>
+          <th>Priority</th>
+          <th>Received</th>
+        </tr>
+      </thead>
+      <tbody id="email-table-body">
+        {% for email in emails %}
+        <tr onclick="window.location='{% url 'keywords:email_detail' email.pk %}'"
+            style="cursor:pointer;"
+            data-sender="{{ email.sender|lower }}">
+
+          <!-- Subject -->
+          <td>
+            <div class="d-flex align-items-center gap-2">
+              <div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:{% if email.analysis %}{% if email.analysis.priority == 'High' %}#f85149{% elif email.analysis.priority == 'Medium' %}#d29922{% else %}#3fb950{% endif %}{% else %}#484f58{% endif %};"></div>
+              <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:280px;font-weight:500;">
+                {{ email.subject|default:"(No Subject)" }}
+              </span>
+            </div>
+          </td>
+
+          <!-- Sender -->
+          <td>
+            <div class="d-flex align-items-center gap-2">
+              <div style="width:28px;height:28px;border-radius:50%;background:rgba(79,142,247,0.15);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#4f8ef7;flex-shrink:0;">
+                {{ email.sender_name|default:email.sender|first|upper }}
+              </div>
+              <span class="text-muted small">
+                {{ email.sender_name|default:email.sender|truncatechars:25 }}
+              </span>
+            </div>
+          </td>
+
+          <!-- Category -->
+          <td>
+            {% if email.analysis %}
+            <span style="background:rgba(79,142,247,0.12);color:#4f8ef7;border:1px solid rgba(79,142,247,0.25);border-radius:50px;padding:.28rem .8rem;font-size:.75rem;font-weight:600;">
+              {{ email.analysis.category }}
+            </span>
+            {% else %}
+            <span class="text-muted small">Processing...</span>
+            {% endif %}
+          </td>
+
+          <!-- Priority -->
+          <td>
+            {% if email.analysis %}
+            <span class="badge-{{ email.analysis.priority|lower }}">
+              {{ email.analysis.priority }}
+            </span>
+            {% else %}
+            <span class="text-muted small">—</span>
+            {% endif %}
+          </td>
+
+          <!-- Received -->
+          <td>
+            <span class="text-muted small">{{ email.received_at|date:"M d, H:i" }}</span>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="text-center py-5">
+            <div style="color:#484f58;">
+              <i class="bi bi-inbox display-5 d-block mb-3"></i>
+              <div class="fw-medium mb-1" style="color:#8b949e;">No emails yet</div>
+              <div class="small mb-3">Connect your Gmail account to start syncing</div>
+              <a href="{% url 'accounts:profile' %}" class="btn btn-accent btn-sm px-4">
+                <i class="bi bi-google me-2"></i>Connect Gmail
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function searchBySender() {
+  const input = document.getElementById('gmail-search-input').value.trim().toLowerCase();
+  const rows = document.querySelectorAll('#email-table-body tr[data-sender]');
+  const resultDiv = document.getElementById('search-result');
+
+  if (!input) {
+    rows.forEach(r => r.style.display = '');
+    resultDiv.innerHTML = '';
+    return;
+  }
+
+  let count = 0;
+  rows.forEach(row => {
+    const sender = row.getAttribute('data-sender') || '';
+    if (sender.includes(input)) {
+      row.style.display = '';
+      count++;
+    } else {
+      row.style.display = 'none';
+    }
+  });
+
+  if (count === 0) {
+    resultDiv.innerHTML = `
+      <div class="d-flex align-items-center gap-2 text-muted small">
+        <i class="bi bi-info-circle"></i>
+        No emails found from <strong>${input}</strong>
+      </div>`;
+  } else {
+    resultDiv.innerHTML = `
+      <div class="d-flex align-items-center gap-2 small" style="color:#3fb950;">
+        <i class="bi bi-check-circle"></i>
+        Found <strong>${count}</strong> email(s) from <strong>${input}</strong>
+      </div>`;
+  }
+}
+
+function clearSearch() {
+  document.getElementById('gmail-search-input').value = '';
+  document.querySelectorAll('#email-table-body tr[data-sender]').forEach(r => r.style.display = '');
+  document.getElementById('search-result').innerHTML = '';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const input = document.getElementById('gmail-search-input');
+  if (input) {
+    input.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') searchBySender();
+    });
+  }
+});
+</script>
+{% endblock %}

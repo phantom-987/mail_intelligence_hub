@@ -8,131 +8,352 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
   <style>
     :root { --sidebar-width: 240px; --accent: #4f8ef7; }
-    body { background: #0d1117; color: #e6edf3; font-family: 'Segoe UI', sans-serif; margin: 0; }
+
+    body {
+      background: #0d1117;
+      color: #e6edf3;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+    }
+
+    /* ── SIDEBAR ─────────────────────────────────── */
     .sidebar {
-      width: var(--sidebar-width); min-height: 100vh; background: #161b22;
-      border-right: 1px solid #30363d; position: fixed; top: 0; left: 0;
-      z-index: 100; display: flex; flex-direction: column; padding: 1.5rem 0;
+      width: var(--sidebar-width);
+      min-height: 100vh;
+      background: #0d1117;
+      border-right: 1px solid #21262d;
+      position: fixed;
+      top: 0; left: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
     }
+
     .sidebar .brand {
-      padding: 0 1.5rem 1.5rem; font-size: 1.1rem; font-weight: 700;
-      color: var(--accent); border-bottom: 1px solid #30363d;
-      margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem;
+      padding: 1.5rem;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent);
+      border-bottom: 1px solid #21262d;
+      margin-bottom: .5rem;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      letter-spacing: -0.3px;
     }
+
+    .sidebar .brand span {
+      color: #e6edf3;
+      font-weight: 300;
+    }
+
+    .sidebar .nav-section {
+      padding: .75rem 1rem .25rem;
+      font-size: .68rem;
+      font-weight: 700;
+      color: #484f58;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
     .sidebar .nav-link {
-      color: #8b949e; padding: .65rem 1.5rem; display: flex;
-      align-items: center; gap: .75rem; font-size: .9rem;
-      transition: all .2s; border-left: 3px solid transparent; text-decoration: none;
+      color: #8b949e;
+      padding: .6rem 1.2rem;
+      margin: .1rem .75rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-size: .88rem;
+      transition: all .2s;
+      border-radius: 8px;
+      text-decoration: none;
+      border-left: none;
     }
-    .sidebar .nav-link:hover, .sidebar .nav-link.active {
-      color: #e6edf3; background: rgba(79,142,247,0.1); border-left-color: var(--accent);
+
+    .sidebar .nav-link:hover {
+      color: #e6edf3;
+      background: rgba(255,255,255,0.06);
     }
-    .sidebar .nav-link i { font-size: 1rem; width: 18px; }
-    .main-content { margin-left: var(--sidebar-width); padding: 2rem; min-height: 100vh; }
-    .card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; }
-    .stat-card { border-radius: 12px; padding: 1.5rem; }
+
+    .sidebar .nav-link.active {
+      color: #e6edf3;
+      background: rgba(79,142,247,0.15);
+      color: var(--accent);
+    }
+
+    .sidebar .nav-link i {
+      font-size: 1rem;
+      width: 18px;
+      text-align: center;
+    }
+
+    .sidebar .user-section {
+      margin: auto .75rem .75rem;
+      padding: .75rem 1rem;
+      background: #161b22;
+      border-radius: 10px;
+      border: 1px solid #21262d;
+    }
+
+    .sidebar .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(79,142,247,0.2);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: .85rem;
+      flex-shrink: 0;
+    }
+
+    /* ── MAIN CONTENT ────────────────────────────── */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      padding: 2rem 2.5rem;
+      min-height: 100vh;
+    }
+
+    /* ── CARDS ───────────────────────────────────── */
+    .card {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 14px;
+    }
+
+    .stat-card {
+      border-radius: 14px;
+      padding: 1.4rem;
+      transition: transform .2s, border-color .2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ── BADGES ──────────────────────────────────── */
     .badge-high {
-      background: rgba(248,81,73,0.15); color: #f85149;
-      border: 1px solid rgba(248,81,73,0.3); padding: .3rem .7rem;
-      border-radius: 50px; font-size: .75rem; font-weight: 600;
+      background: rgba(248,81,73,0.12);
+      color: #f85149;
+      border: 1px solid rgba(248,81,73,0.25);
+      padding: .28rem .75rem;
+      border-radius: 50px;
+      font-size: .75rem;
+      font-weight: 600;
+      display: inline-block;
     }
     .badge-medium {
-      background: rgba(210,153,34,0.15); color: #d29922;
-      border: 1px solid rgba(210,153,34,0.3); padding: .3rem .7rem;
-      border-radius: 50px; font-size: .75rem; font-weight: 600;
+      background: rgba(210,153,34,0.12);
+      color: #d29922;
+      border: 1px solid rgba(210,153,34,0.25);
+      padding: .28rem .75rem;
+      border-radius: 50px;
+      font-size: .75rem;
+      font-weight: 600;
+      display: inline-block;
     }
     .badge-low {
-      background: rgba(63,185,80,0.15); color: #3fb950;
-      border: 1px solid rgba(63,185,80,0.3); padding: .3rem .7rem;
-      border-radius: 50px; font-size: .75rem; font-weight: 600;
+      background: rgba(63,185,80,0.12);
+      color: #3fb950;
+      border: 1px solid rgba(63,185,80,0.25);
+      padding: .28rem .75rem;
+      border-radius: 50px;
+      font-size: .75rem;
+      font-weight: 600;
+      display: inline-block;
     }
+
+    /* ── TABLE ───────────────────────────────────── */
     .table { color: #e6edf3; }
     .table th {
-      color: #8b949e; font-size: .78rem; text-transform: uppercase;
-      letter-spacing: 1px; border-color: #30363d; font-weight: 600; padding: 1rem;
+      color: #484f58;
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      border-color: #21262d;
+      font-weight: 700;
+      padding: .9rem 1rem;
+      background: #0d1117;
     }
-    .table td { border-color: #21262d; vertical-align: middle; padding: .85rem 1rem; }
-    .table tbody tr:hover { background: rgba(79,142,247,0.05); }
+    .table td {
+      border-color: #21262d;
+      vertical-align: middle;
+      padding: .8rem 1rem;
+    }
+    .table tbody tr {
+      transition: background .15s;
+    }
+    .table tbody tr:hover {
+      background: rgba(79,142,247,0.06);
+    }
+
+    /* ── FORMS ───────────────────────────────────── */
     .form-control, .form-select {
-      background: #0d1117; border-color: #30363d; color: #e6edf3; border-radius: 8px;
+      background: #0d1117;
+      border-color: #30363d;
+      color: #e6edf3;
+      border-radius: 8px;
     }
     .form-control:focus, .form-select:focus {
-      background: #0d1117; border-color: var(--accent); color: #e6edf3;
-      box-shadow: 0 0 0 .2rem rgba(79,142,247,.15);
+      background: #0d1117;
+      border-color: var(--accent);
+      color: #e6edf3;
+      box-shadow: 0 0 0 .2rem rgba(79,142,247,.12);
     }
     .form-control::placeholder { color: #484f58; }
     .form-label { color: #8b949e; font-size: .85rem; margin-bottom: .4rem; }
-    .btn-accent { background: var(--accent); color: #fff; border: none; border-radius: 8px; font-weight: 500; }
-    .btn-accent:hover { background: #3a7de8; color: #fff; }
-    .alert-container {
-      position: fixed; top: 1rem; right: 1rem;
-      z-index: 9999; min-width: 300px; max-width: 420px;
+
+    /* ── BUTTONS ─────────────────────────────────── */
+    .btn-accent {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all .2s;
     }
+    .btn-accent:hover {
+      background: #3a7de8;
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(79,142,247,0.3);
+    }
+
+    /* ── ALERTS ──────────────────────────────────── */
+    .alert-container {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 9999;
+      min-width: 300px;
+      max-width: 420px;
+    }
+
+    /* ── AUTH PAGES ──────────────────────────────── */
     .auth-wrapper {
-      min-height: 100vh; display: flex; align-items: center;
-      justify-content: center; background: #0d1117;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0d1117;
     }
     .auth-card {
-      width: 100%; max-width: 440px; background: #161b22;
-      border: 1px solid #30363d; border-radius: 16px; padding: 2.5rem;
+      width: 100%;
+      max-width: 440px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 16px;
+      padding: 2.5rem;
     }
-    .auth-logo { font-size: 1.4rem; font-weight: 700; color: var(--accent); text-align: center; margin-bottom: .5rem; }
-    .auth-subtitle { text-align: center; color: #8b949e; font-size: .9rem; margin-bottom: 2rem; }
-    .auth-footer { text-align: center; color: #8b949e; font-size: .85rem; margin-top: 1.5rem; }
+    .auth-logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: .5rem;
+    }
+    .auth-subtitle {
+      text-align: center;
+      color: #8b949e;
+      font-size: .9rem;
+      margin-bottom: 2rem;
+    }
+    .auth-footer {
+      text-align: center;
+      color: #8b949e;
+      font-size: .85rem;
+      margin-top: 1.5rem;
+    }
     .auth-footer a { color: var(--accent); text-decoration: none; }
     .auth-footer a:hover { text-decoration: underline; }
+
+    /* ── SCROLLBAR ───────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0d1117; }
+    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #484f58; }
   </style>
   {% block extra_css %}{% endblock %}
 </head>
 <body>
 
 {% if user.is_authenticated %}
-  <nav class="sidebar">
-    <div class="brand">
-      <i class="bi bi-envelope-check-fill"></i>Mail Hub
-    </div>
-    <a href="{% url 'dashboard:home' %}"
-       class="nav-link {% if request.resolver_match.app_name == 'dashboard' %}active{% endif %}">
-      <i class="bi bi-speedometer2"></i> Dashboard
-    </a>
-    <a href="{% url 'keywords:email_list' %}"
-       class="nav-link {% if 'emails' in request.path %}active{% endif %}">
-      <i class="bi bi-envelope"></i> Emails
-    </a>
-    <a href="{% url 'keywords:list' %}"
-       class="nav-link {% if 'keywords' in request.path %}active{% endif %}">
-      <i class="bi bi-tags"></i> Keywords
-    </a>
-    <a href="{% url 'accounts:profile' %}"
-       class="nav-link {% if 'profile' in request.path %}active{% endif %}">
-      <i class="bi bi-gear"></i> Settings
-    </a>
-    <div class="mt-auto px-3 pb-2">
-      <div class="text-muted small mb-2 px-2" style="font-size:.78rem;">
-        {{ user.email|truncatechars:28 }}
+<nav class="sidebar">
+  <div class="brand">
+    <i class="bi bi-envelope-check-fill"></i>
+    Mail<span>Hub</span>
+  </div>
+
+  <div class="nav-section">Main</div>
+
+  <a href="{% url 'dashboard:home' %}"
+     class="nav-link {% if request.resolver_match.app_name == 'dashboard' %}active{% endif %}">
+    <i class="bi bi-speedometer2"></i> Dashboard
+  </a>
+
+  <a href="{% url 'keywords:email_list' %}"
+     class="nav-link {% if 'emails' in request.path %}active{% endif %}">
+    <i class="bi bi-envelope"></i> Emails
+  </a>
+
+  <div class="nav-section">Manage</div>
+
+  <a href="{% url 'keywords:list' %}"
+     class="nav-link {% if 'keywords' in request.path %}active{% endif %}">
+    <i class="bi bi-tags"></i> Keywords
+  </a>
+
+  <a href="{% url 'accounts:profile' %}"
+     class="nav-link {% if 'profile' in request.path %}active{% endif %}">
+    <i class="bi bi-gear"></i> Settings
+  </a>
+
+  <!-- User section at bottom -->
+  <div class="mt-auto mx-2 mb-2">
+    <div class="user-section">
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <div class="user-avatar">
+          {{ user.first_name|first|default:user.username|first|upper }}
+        </div>
+        <div style="overflow:hidden;">
+          <div class="fw-semibold small" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+            {{ user.get_full_name|default:user.username }}
+          </div>
+          <div style="font-size:.7rem;color:#484f58;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+            {{ user.email|truncatechars:22 }}
+          </div>
+        </div>
       </div>
-      <a href="{% url 'accounts:logout' %}" class="nav-link" style="color:#f85149;">
-        <i class="bi bi-box-arrow-right"></i> Logout
+      <a href="{% url 'accounts:logout' %}"
+         class="d-flex align-items-center gap-2 text-decoration-none"
+         style="color:#f85149;font-size:.82rem;padding:.3rem .2rem;">
+        <i class="bi bi-box-arrow-right"></i> Sign out
       </a>
     </div>
-  </nav>
-  <div class="main-content">
+  </div>
+</nav>
+
+<div class="main-content">
 {% else %}
-  <div>
+<div>
 {% endif %}
 
-    <div class="alert-container">
-      {% for msg in messages %}
-      <div class="alert alert-{% if msg.tags == 'error' %}danger{% else %}{{ msg.tags }}{% endif %} alert-dismissible fade show shadow" role="alert">
-        {{ msg }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-      {% endfor %}
+  <!-- FLASH MESSAGES -->
+  <div class="alert-container">
+    {% for msg in messages %}
+    <div class="alert alert-{% if msg.tags == 'error' %}danger{% else %}{{ msg.tags }}{% endif %} alert-dismissible fade show shadow" role="alert">
+      {{ msg }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-
-    {% block content %}{% endblock %}
-
+    {% endfor %}
   </div>
+
+  {% block content %}{% endblock %}
+
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 {% block extra_js %}{% endblock %}
