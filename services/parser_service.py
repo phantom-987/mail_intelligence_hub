@@ -1,6 +1,6 @@
 import logging
 from email_processor.models import Keyword, EmailAnalysis
-from services.ai_service import analyze_email
+from services.ai_service import analyze_email, verify_sender
 
 logger = logging.getLogger(__name__)
 
@@ -18,10 +18,16 @@ def process_email(email):
         return None
 
     matches = check_keyword_matches(email)
+
     analysis_data = analyze_email(
         subject=email.subject,
         sender=email.sender,
         body=email.body,
+    )
+
+    verification = verify_sender(
+        sender_email=email.sender,
+        subject=email.subject,
     )
 
     analysis = EmailAnalysis.objects.create(
@@ -33,6 +39,13 @@ def process_email(email):
         important_points=analysis_data['important_points'],
         links=analysis_data['links'],
         keyword_matches=matches,
+        sentiment=analysis_data.get('sentiment', 'Neutral'),
+        action_required=analysis_data.get('action_required', False),
+        action_items=analysis_data.get('action_items', []),
+        suggested_reply=analysis_data.get('suggested_reply', ''),
+        reply_subject=analysis_data.get('reply_subject', ''),
+        sender_verified=verification.get('is_legitimate', True),
+        sender_verification=verification,
     )
 
     email.is_processed = True

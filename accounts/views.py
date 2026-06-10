@@ -3,7 +3,8 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import RegisterForm, LoginForm
-from .models import UserProfile
+from django.views.decorators.http import require_http_methods
+from .models import UserProfile, TrackedGmailAccount
 
 
 def register_view(request):
@@ -41,7 +42,36 @@ def logout_view(request):
     return redirect('accounts:login')
 
 
+
 @login_required
 def profile_view(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
-    return render(request, 'accounts/profile.html', {'profile': profile})
+    tracked_accounts = TrackedGmailAccount.objects.filter(user=request.user)
+    return render(request, 'accounts/profile.html', {
+        'profile': profile,
+        'tracked_accounts': tracked_accounts,
+    })
+
+@login_required
+@require_http_methods(['POST'])
+def add_tracked_account(request):
+    email = request.POST.get('email', '').strip()
+    label = request.POST.get('label', '').strip()
+    if email:
+        TrackedGmailAccount.objects.get_or_create(
+            user=request.user,
+            email=email,
+            defaults={'label': label}
+        )
+        messages.success(request, f'Now tracking {email}')
+    else:
+        messages.error(request, 'Please enter a valid email address.')
+    return redirect('accounts:profile')
+
+
+@login_required
+@require_http_methods(['POST'])
+def remove_tracked_account(request, pk):
+    TrackedGmailAccount.objects.filter(pk=pk, user=request.user).delete()
+    messages.success(request, 'Account removed.')
+    return redirect('accounts:profile')

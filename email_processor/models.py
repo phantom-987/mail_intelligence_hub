@@ -44,6 +44,13 @@ class EmailAnalysis(models.Model):
     important_points = models.JSONField(default=list)
     links = models.JSONField(default=list)
     keyword_matches = models.JSONField(default=list)
+    sentiment = models.CharField(max_length=20, default='Neutral')
+    action_required = models.BooleanField(default=False)
+    action_items = models.JSONField(default=list)
+    suggested_reply = models.TextField(blank=True)
+    reply_subject = models.CharField(max_length=500, blank=True)
+    sender_verified = models.BooleanField(default=True)
+    sender_verification = models.JSONField(default=dict)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
