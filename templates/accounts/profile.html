@@ -1,0 +1,284 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile — Mail Intelligence Hub</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: #161b27;
+      border-bottom: 1px solid #2d3748;
+      padding: 0 2rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #6366f1;
+      text-decoration: none;
+      letter-spacing: -0.3px;
+    }
+    .nav-links { display: flex; gap: 0.5rem; align-items: center; }
+    .nav-links a {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.85rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .nav-links a:hover { background: #1e2535; color: #e2e8f0; }
+    .nav-links a.active { color: #6366f1; background: #1e1f3a; }
+    .btn-logout {
+      background: transparent;
+      border: 1px solid #374151;
+      color: #94a3b8;
+      padding: 0.35rem 0.9rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: #ef4444; color: #ef4444; }
+
+    /* ── LAYOUT ── */
+    .page { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+
+    .page-header { margin-bottom: 2rem; }
+    .page-header h1 { font-size: 1.5rem; font-weight: 700; color: #f1f5f9; }
+    .page-header p { color: #64748b; font-size: 0.9rem; margin-top: 0.25rem; }
+
+    /* ── MESSAGES ── */
+    .messages { margin-bottom: 1.5rem; }
+    .message {
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+    .message.success { background: #0d2d1f; color: #4ade80; border: 1px solid #166534; }
+    .message.error   { background: #2d0d0d; color: #f87171; border: 1px solid #991b1b; }
+    .message.info    { background: #0d1f2d; color: #60a5fa; border: 1px solid #1e3a5f; }
+
+    /* ── CARD ── */
+    .card {
+      background: #161b27;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #1e2535;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-title span { font-size: 1rem; }
+
+    /* ── AVATAR ── */
+    .profile-top {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .avatar {
+      width: 64px; height: 64px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+    .profile-meta h2 { font-size: 1.1rem; font-weight: 600; color: #f1f5f9; }
+    .profile-meta p  { font-size: 0.85rem; color: #64748b; margin-top: 0.2rem; }
+
+    /* ── FORM ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 0.8rem; font-weight: 500; color: #94a3b8; }
+    .form-control {
+      background: #0f1117;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      color: #e2e8f0;
+      padding: 0.6rem 0.85rem;
+      font-size: 0.875rem;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+    }
+    .errorlist {
+      list-style: none;
+      font-size: 0.78rem;
+      color: #f87171;
+      margin-top: 0.2rem;
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      padding: 0.6rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .btn-primary { background: #6366f1; color: #fff; }
+    .btn-primary:hover { background: #4f46e5; }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #374151;
+      color: #94a3b8;
+    }
+    .btn-outline:hover { border-color: #6366f1; color: #6366f1; }
+
+    .form-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    /* ── LINKED ACCOUNTS PREVIEW ── */
+    .accounts-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .accounts-count {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .count-badge {
+      background: #1e1f3a;
+      color: #6366f1;
+      border: 1px solid #3730a3;
+      border-radius: 20px;
+      padding: 0.2rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .accounts-count p { color: #64748b; font-size: 0.875rem; }
+
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .accounts-summary { flex-direction: column; gap: 1rem; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="{% url 'dashboard:home' %}" class="nav-brand">✉️ MailHub</a>
+  <div class="nav-links">
+    <a href="{% url 'dashboard:home' %}">Dashboard</a>
+    <a href="{% url 'accounts:linked_accounts_list' %}">Linked Accounts</a>
+    <a href="{% url 'accounts:profile' %}" class="active">Profile</a>
+    <a href="{% url 'accounts:logout' %}" class="btn-logout">Sign out</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="page-header">
+    <h1>My Profile</h1>
+    <p>Manage your personal details and connected email accounts.</p>
+  </div>
+
+  {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+    <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Profile Card -->
+  <div class="card">
+    <div class="card-title"><span>👤</span> Personal Information</div>
+
+    <div class="profile-top">
+      <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
+      <div class="profile-meta">
+        <h2>{{ request.user.get_full_name|default:request.user.username }}</h2>
+        <p>@{{ request.user.username }} · Joined {{ request.user.date_joined|date:"M Y" }}</p>
+      </div>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="{{ form.first_name.id_for_label }}">First Name</label>
+          {{ form.first_name }}
+          {% if form.first_name.errors %}<ul class="errorlist">{% for e in form.first_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+          {{ form.last_name }}
+          {% if form.last_name.errors %}<ul class="errorlist">{% for e in form.last_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="form-group full">
+          <label for="{{ form.email.id_for_label }}">Email Address</label>
+          {{ form.email }}
+          {% if form.email.errors %}<ul class="errorlist">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+      </div>
+      <div class="form-footer">
+        <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Linked Accounts Summary -->
+  <div class="card">
+    <div class="card-title"><span>🔗</span> Linked Email Accounts</div>
+    <div class="accounts-summary">
+      <div class="accounts-count">
+        <span class="count-badge">{{ profile.user.linked_accounts.count }} / 5</span>
+        <p>Gmail accounts connected to your hub</p>
+      </div>
+      <a href="{% url 'accounts:linked_accounts_list' %}" class="btn btn-outline">Manage Accounts →</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
