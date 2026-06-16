@@ -1,0 +1,270 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Linked Accounts — Mail Intelligence Hub</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    nav {
+      background: #161b27;
+      border-bottom: 1px solid #2d3748;
+      padding: 0 2rem;
+      height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { font-size: 1.1rem; font-weight: 700; color: #6366f1; text-decoration: none; }
+    .nav-links { display: flex; gap: 0.5rem; align-items: center; }
+    .nav-links a {
+      color: #94a3b8; text-decoration: none; font-size: 0.85rem;
+      padding: 0.4rem 0.8rem; border-radius: 6px; transition: all 0.2s;
+    }
+    .nav-links a:hover { background: #1e2535; color: #e2e8f0; }
+    .nav-links a.active { color: #6366f1; background: #1e1f3a; }
+    .btn-logout {
+      background: transparent; border: 1px solid #374151; color: #94a3b8;
+      padding: 0.35rem 0.9rem; border-radius: 6px; font-size: 0.82rem;
+      cursor: pointer; text-decoration: none; transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: #ef4444; color: #ef4444; }
+
+    .page { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+
+    .page-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; margin-bottom: 2rem; gap: 1rem;
+    }
+    .page-header h1 { font-size: 1.5rem; font-weight: 700; color: #f1f5f9; }
+    .page-header p { color: #64748b; font-size: 0.875rem; margin-top: 0.25rem; }
+
+    /* ── MESSAGES ── */
+    .messages { margin-bottom: 1.5rem; }
+    .message {
+      padding: 0.75rem 1rem; border-radius: 8px;
+      font-size: 0.875rem; margin-bottom: 0.5rem;
+    }
+    .message.success { background: #0d2d1f; color: #4ade80; border: 1px solid #166534; }
+    .message.error   { background: #2d0d0d; color: #f87171; border: 1px solid #991b1b; }
+    .message.warning { background: #2d1f0d; color: #fbbf24; border: 1px solid #92400e; }
+    .message.info    { background: #0d1f2d; color: #60a5fa; border: 1px solid #1e3a5f; }
+
+    /* ── CONNECT BUTTON ── */
+    .btn {
+      padding: 0.6rem 1.25rem; border-radius: 8px; font-size: 0.875rem;
+      font-weight: 500; cursor: pointer; border: none; transition: all 0.2s;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-primary { background: #6366f1; color: #fff; }
+    .btn-primary:hover { background: #4f46e5; transform: translateY(-1px); }
+    .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.78rem; }
+    .btn-ghost {
+      background: transparent; border: 1px solid #2d3748;
+      color: #94a3b8;
+    }
+    .btn-ghost:hover { border-color: #6366f1; color: #6366f1; }
+    .btn-danger {
+      background: transparent; border: 1px solid #374151; color: #94a3b8;
+    }
+    .btn-danger:hover { border-color: #ef4444; color: #ef4444; }
+
+    /* ── LIMIT BAR ── */
+    .limit-bar {
+      background: #161b27;
+      border: 1px solid #2d3748;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .limit-info { display: flex; align-items: center; gap: 0.75rem; }
+    .limit-track {
+      width: 120px; height: 6px;
+      background: #1e2535; border-radius: 3px; overflow: hidden;
+    }
+    .limit-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6);
+      transition: width 0.4s ease;
+    }
+    .limit-text { font-size: 0.8rem; color: #64748b; }
+    .limit-text strong { color: #cbd5e1; }
+
+    /* ── ACCOUNT CARD ── */
+    .account-card {
+      background: #161b27;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 1.25rem;
+      transition: border-color 0.2s;
+    }
+    .account-card:hover { border-color: #374151; }
+    .account-card.inactive { opacity: 0.55; }
+
+    .gmail-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: linear-gradient(135deg, #ea4335, #fbbc05);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+
+    .account-info { flex: 1; min-width: 0; }
+    .account-email {
+      font-size: 0.925rem; font-weight: 600; color: #f1f5f9;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .account-meta {
+      display: flex; align-items: center; gap: 0.75rem; margin-top: 0.3rem; flex-wrap: wrap;
+    }
+    .account-meta span { font-size: 0.78rem; color: #64748b; }
+    .nickname-tag {
+      background: #1e1f3a; color: #818cf8;
+      border: 1px solid #3730a3; border-radius: 4px;
+      padding: 0.1rem 0.5rem; font-size: 0.75rem;
+    }
+
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%; display: inline-block;
+    }
+    .status-dot.active   { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+    .status-dot.inactive { background: #4b5563; }
+
+    .account-actions { display: flex; gap: 0.5rem; flex-shrink: 0; flex-wrap: wrap; }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center; padding: 4rem 2rem;
+      background: #161b27; border: 1px dashed #2d3748;
+      border-radius: 12px;
+    }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+    .empty-state h3 { font-size: 1.1rem; color: #cbd5e1; margin-bottom: 0.5rem; }
+    .empty-state p { color: #64748b; font-size: 0.875rem; margin-bottom: 1.5rem; }
+
+    @media (max-width: 600px) {
+      .page-header { flex-direction: column; }
+      .account-card { flex-wrap: wrap; }
+      .account-actions { width: 100%; justify-content: flex-end; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="{% url 'dashboard:home' %}" class="nav-brand">✉️ MailHub</a>
+  <div class="nav-links">
+    <a href="{% url 'dashboard:home' %}">Dashboard</a>
+    <a href="{% url 'accounts:linked_accounts_list' %}" class="active">Linked Accounts</a>
+    <a href="{% url 'accounts:profile' %}">Profile</a>
+    <a href="{% url 'accounts:logout' %}" class="btn-logout">Sign out</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <h1>Linked Accounts</h1>
+      <p>Connect your Gmail accounts to start syncing and analysing emails.</p>
+    </div>
+    {% if total < 5 %}
+    <a href="{% url 'accounts:connect_gmail' %}" class="btn btn-primary">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+      Connect Gmail
+    </a>
+    {% endif %}
+  </div>
+
+  {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+    <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Limit Bar -->
+  <div class="limit-bar">
+    <div class="limit-info">
+      <div class="limit-track">
+        <div class="limit-fill" style="width: {% widthratio total 5 100 %}%"></div> 
+      </div>
+      <p class="limit-text"><strong>{{ total }}</strong> of 5 accounts connected</p>
+    </div>
+    {% if total >= 5 %}
+    <span style="font-size:0.78rem; color:#fbbf24;">⚠️ Limit reached — disconnect one to add another</span>
+    {% else %}
+    <span style="font-size:0.78rem; color:#64748b;">{{ 5|add:"-"|add:total }} slot{{ 5|add:"-"|add:total|pluralize }} remaining</span>
+    {% endif %}
+  </div>
+
+  <!-- Account List -->
+  {% if accounts %}
+    {% for account in accounts %}
+    <div class="account-card {% if not account.is_active %}inactive{% endif %}">
+
+      <div class="gmail-icon">📧</div>
+
+      <div class="account-info">
+        <div class="account-email">{{ account.email }}</div>
+        <div class="account-meta">
+          <span>
+            <span class="status-dot {% if account.is_active %}active{% else %}inactive{% endif %}"></span>
+            {% if account.is_active %}Syncing{% else %}Paused{% endif %}
+          </span>
+          <span>{{ account.provider|capfirst }}</span>
+          {% if account.nickname %}
+          <span class="nickname-tag">{{ account.nickname }}</span>
+          {% endif %}
+          <span>Added {{ account.created_at|date:"d M Y" }}</span>
+        </div>
+      </div>
+
+      <div class="account-actions">
+        <!-- Nickname -->
+        <a href="{% url 'accounts:update_nickname' account.id %}" class="btn btn-ghost btn-sm" title="Edit nickname">✏️</a>
+
+        <!-- Toggle active/pause -->
+        <form method="post" action="{% url 'accounts:toggle_account' account.id %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-ghost btn-sm" title="{% if account.is_active %}Pause{% else %}Resume{% endif %}">
+            {% if account.is_active %}⏸️{% else %}▶️{% endif %}
+          </button>
+        </form>
+
+        <!-- Disconnect -->
+        <form method="post" action="{% url 'accounts:disconnect_account' account.id %}"
+              style="display:inline;"
+              onsubmit="return confirm('Disconnect {{ account.email }}? This cannot be undone.')">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger btn-sm" title="Disconnect">🗑️</button>
+        </form>
+      </div>
+
+    </div>
+    {% endfor %}
+
+  {% else %}
+  <div class="empty-state">
+    <div class="icon">📭</div>
+    <h3>No accounts connected yet</h3>
+    <p>Connect your Gmail account to start syncing and analysing your emails.</p>
+    <a href="{% url 'accounts:connect_gmail' %}" class="btn btn-primary">
+      Connect your first Gmail account
+    </a>
+  </div>
+  {% endif %}
+
+</div>
+</body>
+</html>

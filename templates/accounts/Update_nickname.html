@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Nickname — Mail Intelligence Hub</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f1117; color: #e2e8f0; min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+    nav {
+      background: #161b27; border-bottom: 1px solid #2d3748;
+      padding: 0 2rem; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { font-size: 1.1rem; font-weight: 700; color: #6366f1; text-decoration: none; }
+    .nav-links { display: flex; gap: 0.5rem; align-items: center; }
+    .nav-links a {
+      color: #94a3b8; text-decoration: none; font-size: 0.85rem;
+      padding: 0.4rem 0.8rem; border-radius: 6px; transition: all 0.2s;
+    }
+    .nav-links a:hover { background: #1e2535; color: #e2e8f0; }
+
+    .page {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .card {
+      background: #161b27; border: 1px solid #2d3748;
+      border-radius: 14px; padding: 2rem; width: 100%; max-width: 420px;
+    }
+    .card-icon { font-size: 2rem; margin-bottom: 1rem; text-align: center; }
+    .card h2 {
+      font-size: 1.15rem; font-weight: 700; color: #f1f5f9;
+      text-align: center; margin-bottom: 0.4rem;
+    }
+    .account-email {
+      text-align: center; color: #64748b; font-size: 0.85rem; margin-bottom: 1.75rem;
+      background: #0f1117; padding: 0.4rem 1rem; border-radius: 6px;
+      border: 1px solid #1e2535;
+    }
+    label { font-size: 0.8rem; font-weight: 500; color: #94a3b8; display: block; margin-bottom: 0.4rem; }
+    .form-control {
+      width: 100%; background: #0f1117; border: 1px solid #2d3748;
+      border-radius: 8px; color: #e2e8f0; padding: 0.65rem 0.9rem;
+      font-size: 0.875rem; transition: border-color 0.2s;
+    }
+    .form-control:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+    .help-text { font-size: 0.77rem; color: #4b5563; margin-top: 0.35rem; }
+    .errorlist { list-style: none; font-size: 0.78rem; color: #f87171; margin-top: 0.3rem; }
+
+    .actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+    .btn {
+      flex: 1; padding: 0.65rem; border-radius: 8px; font-size: 0.875rem;
+      font-weight: 500; cursor: pointer; border: none; transition: all 0.2s;
+      text-decoration: none; text-align: center;
+    }
+    .btn-primary { background: #6366f1; color: #fff; }
+    .btn-primary:hover { background: #4f46e5; }
+    .btn-outline { background: transparent; border: 1px solid #374151; color: #94a3b8; }
+    .btn-outline:hover { border-color: #6366f1; color: #6366f1; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="{% url 'dashboard:home' %}" class="nav-brand">✉️ MailHub</a>
+  <div class="nav-links">
+    <a href="{% url 'accounts:linked_accounts_list' %}">← Back to Accounts</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="card">
+    <div class="card-icon">✏️</div>
+    <h2>Edit Nickname</h2>
+    <div class="account-email">{{ account.email }}</div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div>
+        <label for="{{ form.nickname.id_for_label }}">Nickname</label>
+        {{ form.nickname }}
+        {% if form.nickname.errors %}
+          <ul class="errorlist">{% for e in form.nickname.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+        {% endif %}
+        <p class="help-text">e.g. Work, Personal, Freelance — helps you identify this account quickly.</p>
+      </div>
+      <div class="actions">
+        <a href="{% url 'accounts:linked_accounts_list' %}" class="btn btn-outline">Cancel</a>
+        <button type="submit" class="btn btn-primary">Save Nickname</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>
