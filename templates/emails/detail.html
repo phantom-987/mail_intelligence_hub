@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% block title %}{{ email.subject|default:"Email Detail" }} — Mail Hub{% endblock %}
+
+{% block content %}
+
+<a href="{% url 'keywords:email_list' %}"
+   class="d-inline-flex align-items-center gap-2 text-muted text-decoration-none mb-4 small">
+  <i class="bi bi-arrow-left"></i> Back to Emails
+</a>
+
+<div class="row g-4">
+
+  <!-- LEFT: AI Analysis -->
+  {% if analysis %}
+  <div class="col-md-5">
+
+    <!-- Sender Verification -->
+    {% if analysis.sender_verification %}
+    {% with v=analysis.sender_verification %}
+    <div class="card p-3 mb-3" style="border-color:{% if v.is_legitimate %}rgba(63,185,80,0.3){% else %}rgba(248,81,73,0.3){% endif %};">
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <i class="bi bi-shield-{% if v.is_legitimate %}check text-success{% else %}exclamation text-danger{% endif %}" style="font-size:1.1rem;"></i>
+        <span class="fw-semibold small">Sender Verification</span>
+        <span class="ms-auto small" style="padding:.2rem .7rem;border-radius:50px;font-size:.72rem;font-weight:600;{% if v.recommendation == 'Safe to engage' %}background:rgba(63,185,80,0.12);color:#3fb950;border:1px solid rgba(63,185,80,0.25);{% elif v.recommendation == 'Likely spam/phishing' %}background:rgba(248,81,73,0.12);color:#f85149;border:1px solid rgba(248,81,73,0.25);{% else %}background:rgba(210,153,34,0.12);color:#d29922;border:1px solid rgba(210,153,34,0.25);{% endif %}">
+          {{ v.recommendation }}
+        </span>
+      </div>
+      <div class="d-flex gap-2 mb-2 flex-wrap">
+        <span class="small text-muted">Domain: <strong style="color:#e6edf3;">{{ v.domain_type }}</strong></span>
+        <span class="small text-muted">Confidence: <strong style="color:#e6edf3;">{{ v.confidence }}</strong></span>
+      </div>
+      <p class="small text-muted mb-0">{{ v.explanation }}</p>
+      {% if v.red_flags %}
+      <div class="d-flex flex-wrap gap-1 mt-2">
+        {% for flag in v.red_flags %}
+        <span style="background:rgba(248,81,73,0.1);color:#f85149;border:1px solid rgba(248,81,73,0.2);border-radius:50px;padding:.15rem .6rem;font-size:.7rem;">⚠ {{ flag }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endwith %}
+    {% endif %}
+
+    <!-- AI Analysis Card -->
+    <div class="card p-4 mb-3">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="fw-semibold mb-0 d-flex align-items-center gap-2">
+          <i class="bi bi-stars" style="color:#d29922;"></i> AI Analysis
+        </h6>
+        <div class="d-flex gap-2 flex-wrap">
+          <span class="badge-{{ analysis.priority|lower }}">{{ analysis.priority }}</span>
+          <span style="background:rgba(79,142,247,0.12);color:#4f8ef7;border:1px solid rgba(79,142,247,0.25);border-radius:50px;padding:.2rem .7rem;font-size:.72rem;font-weight:600;">{{ analysis.category }}</span>
+          <span style="background:rgba(139,148,158,0.1);color:#8b949e;border:1px solid rgba(139,148,158,0.2);border-radius:50px;padding:.2rem .7rem;font-size:.72rem;">{{ analysis.sentiment }}</span>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="mb-4">
+        <div class="text-muted small mb-2 fw-semibold text-uppercase" style="letter-spacing:.8px;font-size:.7rem;">Summary</div>
+        <p class="small mb-0" style="line-height:1.7;color:#c9d1d9;">{{ analysis.summary }}</p>
+      </div>
+
+      <!-- Key Points -->
+      {% if analysis.important_points %}
+      <div class="mb-4">
+        <div class="text-muted small mb-2 fw-semibold text-uppercase" style="letter-spacing:.8px;font-size:.7rem;">Key Points</div>
+        <ul class="mb-0" style="padding-left:1.2rem;">
+          {% for point in analysis.important_points %}
+          <li class="small mb-2" style="color:#c9d1d9;line-height:1.6;">{{ point }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <!-- Action Items -->
+      {% if analysis.action_required and analysis.action_items %}
+      <div class="mb-4 p-3 rounded" style="background:rgba(210,153,34,0.08);border:1px solid rgba(210,153,34,0.2);">
+        <div class="small mb-2 fw-semibold d-flex align-items-center gap-1" style="color:#d29922;">
+          <i class="bi bi-lightning-charge-fill"></i> Action Required
+        </div>
+        <ul class="mb-0" style="padding-left:1.2rem;">
+          {% for item in analysis.action_items %}
+          <li class="small mb-1" style="color:#d29922;line-height:1.6;">{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <!-- Deadline -->
+      {% if analysis.deadline %}
+      <div class="mb-4">
+        <div class="text-muted small mb-2 fw-semibold text-uppercase" style="letter-spacing:.8px;font-size:.7rem;"><i class="bi bi-calendar-event me-1"></i>Deadline</div>
+        <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded" style="background:rgba(248,81,73,0.1);border:1px solid rgba(248,81,73,0.2);">
+          <i class="bi bi-alarm" style="color:#f85149;"></i>
+          <span class="small fw-medium" style="color:#f85149;">{{ analysis.deadline }}</span>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Links -->
+      {% if analysis.links %}
+      <div class="mb-4">
+        <div class="text-muted small mb-2 fw-semibold text-uppercase" style="letter-spacing:.8px;font-size:.7rem;">Links</div>
+        {% for link in analysis.links %}
+        <a href="{{ link }}" target="_blank" rel="noopener"
+           class="d-flex align-items-center gap-2 text-decoration-none mb-2 small" style="color:#4f8ef7;overflow:hidden;">
+          <i class="bi bi-link-45deg flex-shrink-0"></i>
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ link|truncatechars:45 }}</span>
+          <i class="bi bi-box-arrow-up-right flex-shrink-0" style="font-size:.65rem;"></i>
+        </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Keyword Matches -->
+      {% if analysis.keyword_matches %}
+      <div>
+        <div class="text-muted small mb-2 fw-semibold text-uppercase" style="letter-spacing:.8px;font-size:.7rem;">Keyword Matches</div>
+        <div class="d-flex flex-wrap gap-2">
+          {% for kw in analysis.keyword_matches %}
+          <span style="background:rgba(79,142,247,0.1);color:#4f8ef7;border:1px solid rgba(79,142,247,0.2);border-radius:50px;padding:.2rem .75rem;font-size:.75rem;">{{ kw }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Suggested Reply Card -->
+    {% if analysis.suggested_reply %}
+    <div class="card p-4">
+      <h6 class="fw-semibold mb-3 d-flex align-items-center gap-2">
+        <i class="bi bi-reply-fill" style="color:var(--accent);"></i> Suggested Reply
+      </h6>
+      <div class="small text-muted mb-1">Subject:</div>
+      <div class="small fw-medium mb-3" style="color:#e6edf3;">{{ analysis.reply_subject }}</div>
+      <div class="p-3 rounded mb-3" id="reply-content"
+           style="background:#0d1117;border:1px solid #30363d;font-size:.85rem;line-height:1.8;color:#c9d1d9;white-space:pre-wrap;">{{ analysis.suggested_reply }}</div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-sm btn-outline-secondary" onclick="copyReply()" id="copy-btn">
+          <i class="bi bi-clipboard me-1"></i>Copy Reply
+        </button>
+        <a href="mailto:{{ email.sender }}?subject={{ analysis.reply_subject|urlencode }}" class="btn btn-sm btn-accent">
+          <i class="bi bi-envelope me-1"></i>Open in Mail
+        </a>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+  {% endif %}
+
+  <!-- RIGHT: Original Email -->
+  <div class="col-md-{% if analysis %}7{% else %}12{% endif %}">
+    <div class="card p-4">
+      <h5 class="fw-bold mb-3" style="line-height:1.4;">{{ email.subject|default:"(No Subject)" }}</h5>
+
+      <div class="d-flex flex-wrap gap-3 mb-3 pb-3 border-bottom border-secondary">
+        <div class="d-flex align-items-center gap-2">
+          <div style="width:32px;height:32px;border-radius:50%;background:rgba(79,142,247,0.15);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#4f8ef7;">
+            {{ email.sender_name|default:email.sender|first|upper }}
+          </div>
+          <div>
+            <div class="small fw-medium">{{ email.sender_name|default:email.sender }}</div>
+            <div style="font-size:.72rem;color:#484f58;">{{ email.sender }}</div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2 text-muted small ms-auto">
+          <i class="bi bi-clock"></i>
+          {{ email.received_at|date:"F j, Y — H:i" }}
+        </div>
+      </div>
+
+      {% if email.has_attachments %}
+      <div class="mb-3 pb-3 border-bottom border-secondary">
+        <div class="text-muted small mb-2"><i class="bi bi-paperclip me-1"></i>Attachments</div>
+        <div class="d-flex flex-wrap gap-2">
+          {% for name in email.attachment_names %}
+          <span style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:.3rem .75rem;font-size:.78rem;color:#8b949e;">
+            <i class="bi bi-file-earmark me-1"></i>{{ name }}
+          </span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <div style="white-space:pre-wrap;line-height:1.85;font-size:.9rem;color:#c9d1d9;max-height:600px;overflow-y:auto;padding-right:.5rem;">{{ email.body }}</div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyReply() {
+  const text = document.getElementById('reply-content').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.innerHTML = '<i class="bi bi-check2 me-1"></i>Copied!';
+    btn.style.color = '#3fb950';
+    btn.style.borderColor = '#3fb950';
+    setTimeout(() => {
+      btn.innerHTML = '<i class="bi bi-clipboard me-1"></i>Copy Reply';
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }, 2000);
+  });
+}
+</script>
+{% endblock %}

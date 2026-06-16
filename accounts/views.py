@@ -61,6 +61,7 @@ def logout_view(request):
     return redirect('accounts:login')
 
 
+
 @login_required
 def profile_view(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
